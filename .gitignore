@@ -38,3 +38,11 @@ jspm_packages
 # Optional REPL history
 .node_repl_history
 
+
+#Webstorm Files
+.idea
+.idea/jsLibraryMappings.xml
+.idea/workspace.xml
+.idea/scribedocuments.iml
+.idea/libraries
+
