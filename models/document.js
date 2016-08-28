@@ -1,4 +1,7 @@
-'use strict';
+// 'use strict';
+var DocumentKeyword = require('./DocumentKeyword');
+
+
 module.exports = function(sequelize, DataTypes) {
   var Document = sequelize.define('Document', {
     title: DataTypes.STRING,
@@ -19,7 +22,9 @@ module.exports = function(sequelize, DataTypes) {
             allowNull: false
           }
         });
-        Document.hasMany(models.Keyword);
+        Document.belongsToMany(models.Keyword,{
+          through: models.DocumentKeyword
+        });
       }
     }
   });

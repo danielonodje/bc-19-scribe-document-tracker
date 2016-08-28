@@ -7,7 +7,7 @@ module.exports = function(sequelize, DataTypes) {
     first_name: DataTypes.STRING,
     last_name: DataTypes.STRING,
     email: DataTypes.STRING,
-    password_hash: DataTypes.STRING
+    password: DataTypes.STRING
   }, {
     classMethods: {
       associate: function(models) {
@@ -20,8 +20,8 @@ module.exports = function(sequelize, DataTypes) {
 
     instanceMethods : {},
     hooks: {
-      beforeCreate: function(user,options){
-        user.password = bcrypt.hashSync(user.password,bcrypt.genSaltSync(8));
+      beforeCreate: function(user, options){
+        user.password = bcrypt.hashSync(this.password,bcrypt.genSaltSync(8));
       }
     }
   });

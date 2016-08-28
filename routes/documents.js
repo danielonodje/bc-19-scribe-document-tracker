@@ -3,7 +3,7 @@ var router = express.Router();
 
 /* GET documents listing. */
 router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+  res.send('documents page');
 });
 
 module.exports = router;
