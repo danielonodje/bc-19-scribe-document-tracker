@@ -1,4 +1,5 @@
 // 'use strict';
+var uuid = require('node-uuid');
 
 var bcrypt = require('bcrypt-nodejs');
 
@@ -7,7 +8,8 @@ module.exports = function(sequelize, DataTypes) {
     first_name: DataTypes.STRING,
     last_name: DataTypes.STRING,
     email: DataTypes.STRING,
-    password: DataTypes.STRING
+    password: DataTypes.STRING,
+    token: DataTypes.STRING
   }, {
     classMethods: {
       associate: function(models) {
@@ -18,10 +20,15 @@ module.exports = function(sequelize, DataTypes) {
       }
     },
 
-    instanceMethods : {},
+    instanceMethods : {
+      validToken: function(user,token){
+        return user.token === token;
+      }
+    },
     hooks: {
       beforeCreate: function(user, options){
         user.password = bcrypt.hashSync(this.password,bcrypt.genSaltSync(8));
+        user.token = uuid.v4();
       }
     }
   });
