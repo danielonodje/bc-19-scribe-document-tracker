@@ -28,9 +28,9 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <strong>Email: </strong>info@yourdomain.com
+                    <strong>Email: </strong>info@scribedocuments.com
                     &nbsp;&nbsp;
-                    <strong>Support: </strong>+90-897-678-44
+                    <strong>Support: </strong>+1-800-SCRIBE
                 </div>
 
             </div>
@@ -185,10 +185,8 @@
                 swal({   animation: "slide-from-top", title: "<span style='color: #912a1d'>Hey partner!<br>There are a few errors</span>",   text: "Fix the errors to continue", html: true, type: "warning" });
             }
             else{
-                postdata = {first_name: first_name, last_name: last_name, email: email, password: password};
-                $.post('/users/signup',postdata,function(data){
-//                    data = $.parseJSON(data);
-                    console.log(data);
+                userdata = {first_name: first_name, last_name: last_name, email: email, password: password};
+                $.post('/users/signup',userdata,function(data){
                     if(data.status === 'pass'){
                         var user_id = data.user_id;
                         var token = data.token;
@@ -197,7 +195,7 @@
                         window.location.replace('/user/'+user_id);
                     }
                     else{
-                        sweetAlert("Oops...", "Server seems to have run off. We'll fix it. Check back later?", "error");
+                        sweetAlert("Oops...",data.error, "error");
                     }
                 });
             }
@@ -227,7 +225,20 @@
                 swal({   animation: "slide-from-top", title: "<span style='color: #912a1d'>Hey partner!<br>There are a few errors</span>",   text: "Fix the errors to continue", html: true, type: "warning" });
             }
             else{
-                //do ajax call
+                var userdata = {email: email, password: password};
+                $.post('/users/signin',userdata,function(data){
+                    console.log(data);
+                    if(data.status === 'pass'){
+                        var user_id = data.user_id;
+                        var token = data.token;
+                        Cookies.set('user_id',user_id);
+                        Cookies.set('token',token);
+                        window.location.href = '/user/'+user_id;
+                    }
+                    else{
+                        sweetAlert("Shucks",data.error, "error");
+                    }
+                });
             }
         }
 

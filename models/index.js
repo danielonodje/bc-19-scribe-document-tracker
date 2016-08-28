@@ -34,6 +34,6 @@ db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
 //uncomment the line below to push model changes to database
-sequelize.sync({ force: true });
+// sequelize.sync({ force: true });
 
 module.exports = db;

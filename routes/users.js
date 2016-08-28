@@ -11,7 +11,7 @@ router.post('/signup', function(req, res, next) {
     userdata = {first_name: req.body.first_name, last_name: req.body.last_name, email: req.body.email, password: req.body.password};
     UserModel.create(userdata).then(function(user){
         user !== null ? res.send({status: "pass", user_id: user.id, token: user.token, error: ''}) :
-            res.send({status: "fail", error: "An error occurred. Could not create the user."});
+            res.send({status: "fail", error: "Server seems to have run off. We'll fix it. Check back later?"});
     });
 });
 
@@ -20,13 +20,21 @@ router.post('/signin',function(req,res,next){
     password = req.body.password;
     UserModel.find({where: {email: email}}).then(function(user){
         if(user !== null){
-            if(UserModel.validPassword(user,password)){
+            console.log(user);
+            if(UserModel.validPassword(password,user)){
                 res.send({status: "pass", user_id: user.id, token: user.token, error: ''});
             }
+            else{
+                res.send({status: "fail", error: "Whoa there. Sure you got that right? Check your login details, bud"});
+            }
         }else{
-            res.send({status: "fail", error: "Login Failed."});
+            res.send({status: "fail", error: "Server seems to have run off. We'll fix it. Check back later?"});
         }
     });
+});
+
+router.get('/id/token',function(req,res,next){
+    // user_id =
 });
 
 
