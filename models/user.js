@@ -15,8 +15,13 @@ module.exports = function(sequelize, DataTypes) {
       associate: function(models) {
         User.hasMany(models.Document)
       },
-      validPassword: function(user,password) {
-        return bcrypt.compareSync(password,user.password);
+      validPassword: function(password,user) {
+        console.log(user.password);
+        console.log(password);
+        var result =  bcrypt.compareSync(password,user.password);
+        console.log(result);
+        return result;
+        // return password == user.password;
       }
     },
 
@@ -27,7 +32,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     hooks: {
       beforeCreate: function(user, options){
-        user.password = bcrypt.hashSync(this.password,bcrypt.genSaltSync(8));
+        user.password = bcrypt.hashSync(user.password,bcrypt.genSaltSync(10));
         user.token = uuid.v4();
       }
     }
