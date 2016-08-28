@@ -1,0 +1,14 @@
+extends ../layout
+
+block content
+    h1 Sign Up
+    form(action="/users/signup" method="POST")
+        label First Name
+        input(type="text" name="first_name")
+        label Last Name
+        input(type="text" name="last_name")
+        label Email
+        input(type="text" name="email")
+        label Password
+        input(type="text" name="password")
+        button(type="submit") Sign Up

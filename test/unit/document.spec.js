@@ -5,7 +5,7 @@ var UserModel = require('../../models').User;
 var DepartmentModel = require('../../models').Department;
 var userdata = { first_name: 'Leonard', last_name: 'of Quirm', email: 'leonard@quirm.am', password: 'renaissance'};
 var departmentdata = {name: 'success'};
-var documentdata = {title:'a document', link: 'http://www.document.org', description: 'a document description', UserId: '', DocumentId: ''};
+var documentdata = {title:'a document', link: 'http://www.document.org', description: 'a document description'};
 
 
 describe('Document Model',function(){
