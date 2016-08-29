@@ -63,29 +63,26 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <h4 class="page-head-line">Create A New Document</h4>
+                <h4 class="page-head-line">List Documents</h4>
             </div>
         </div>
 
     </div>
     <div class="row">
-            <div class="col-md-7 col-md-offset-2">
-                <label>Title: </label>
-                <input id="title" name="title" type="text" class="form-control" />
-                <span class="error-info alert-warning" id="title_error">Enter a title</span><br>
-                <label>Link: </label>
-                <input type="text" id="link" name="link" class="form-control" />
-                <span class="error-info alert-warning" id="link_error">Enter a link</span><br>
-                <label>Description: </label>
-                <textarea id="description" name="description" rows="5" class="form-control" name="description"></textarea><br/>
-                <label>Department: </label>
-                <select id="deptid" class="form-control" name="deptid">
-                </select>
-                <span class="error-info alert-warning" id="department_error">Choose a department</span><br>
-                <a id="create_btn" class="btn btn-info"><span class="glyphicon glyphicon-book"></span> &nbsp;Create Document </a>&nbsp;
-                <br><br>
-            </div>
-            <div class="col-md-6">
+        <div class="col-md-9 col-md-offset-1">
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <th>Title</th>
+                    <th>Link</th>
+                    <th>Description</th>
+                    <th>Action</th>
+                </thead>
+                <tbody id="table-body">
+
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6">
         </div>
     </div>
 </div>
@@ -109,61 +106,22 @@
 <script src="assets/js/jscookie.js"></script>
 <script>
     $(document).ready(function(){
-        $.get('/departments',function(data){
-            for(var i = 0; i < data.length; i++){
-                $('#deptid').append("<option value='"+data[i].id+"'>"+data[i].name+"<option>");
+        var token = Cookies.get(token);
+        if(token === null || token === undefined){
+            window.location.href = '/index.html/';
+        }
+        $.get('/documents/',function(data){
+            for(var i = 0; i < data.documents.length; i++){
+                $('#table-body').append("<tr><td>"+data.documents[i].title+"</td><td>"+data.documents[i].link+"</td>td><td>"+data.documents[i].description+"</td><td><a class=\"btn view-item btn-primary\"id="+data.documents[i].id+">View</a>&nbsp;<button class=\"btn remove-doc btn-danger\"id="+data.documents[i].id+">Delete</button></td>");
             }
         });
 
-        $('.error-info').hide();
-
-        $('#create_btn').click(function(){
-            submit();
+        $('.remove-doc').click(function(evt){
+            alert('slfnslfsd');
         });
     });
 
 
-    function submit(){
-        var title = $('#title').val();
-        var link = $('#link').val();
-        var description = $('#description').val();
-        var deptid = $('#deptid').val();
-
-        var has_error = false;
-
-        if(title === ""){
-            has_error = true;
-            $('#title_error').show();
-        }
-
-        if(link === ""){
-            has_error = true;
-            $('#link_error').show();
-        }
-
-        if(has_error){
-            swal({   animation: "slide-from-top", title: "<span style='color: #912a1d'>Hey partner!<br>There are a few errors</span>",   text: "Fix the errors to continue", html: true, type: "warning" });
-        }
-        else{
-            var user_id = Cookies.get('user_id');
-            var token = Cookies.get('token');
-            var documentdata = {title: title, link: link, description: description, deptid: deptid, token: token};
-            $.post('documents/create',documentdata,function(data){
-                if(data.status === 'success'){
-                    sweetAlert("Yippie",data.message, "success");
-                    setTimeout(function(){ window.location.href = '/documents.html/'; }, 2000);
-                }
-                else{
-                    sweetAlert("Whoa",data.error, "error");
-                }
-            });
-        }
-    }
-
-    function validateEmail(email) {
-        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(email);
-    }
 </script>
 </body>
 </html>

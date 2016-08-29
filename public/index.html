@@ -192,7 +192,7 @@
                         var token = data.token;
                         Cookies.set('user_id',user_id);
                         Cookies.set('token',token);
-                        window.location.replace('/user/'+user_id);
+                        window.location.href = '/documents.html/';
                     }
                     else{
                         sweetAlert("Oops...",data.error, "error");
@@ -233,7 +233,7 @@
                         var token = data.token;
                         Cookies.set('user_id',user_id);
                         Cookies.set('token',token);
-                        window.location.href = '/user/'+user_id;
+                        window.location.href = '/documents.html/';
                     }
                     else{
                         sweetAlert("Shucks",data.error, "error");
