@@ -4,7 +4,18 @@ var UserModel = require('../models').User;
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
+    UserModel.findAll().then(function(users){
+        res.send({status: "success", users: users});
+    });
   res.send('users page');
+});
+
+router.get('/:id', function(req, res, next) {
+    id = req.params.id;
+    UserModel.find({where: {id: id}}).then(function(user){
+        res.send({status: "success", user: user});
+    });
+    res.send('users page');
 });
 
 router.post('/signup', function(req, res, next) {
