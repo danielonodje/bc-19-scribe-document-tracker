@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <!--[if IE]>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <![endif]-->
+    <title>Scribe Document Manager</title>
+    <!-- BOOTSTRAP CORE STYLE  -->
+    <link href="assets/css/bootstrap.css" rel="stylesheet" />
+    <!-- FONT AWESOME ICONS  -->
+    <link href="assets/css/font-awesome.css" rel="stylesheet" />
+    <!-- CUSTOM STYLE  -->
+    <link href="assets/css/style.css" rel="stylesheet" />
+    <link href="assets/css/sweetalert.css" rel="stylesheet" />
+    <!-- HTML5 Shiv and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<header>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <strong>Email: </strong>info@scribedocuments.com
+                &nbsp;&nbsp;
+                <strong>Support: </strong>+1-800-SCRIBE
+            </div>
+
+        </div>
+    </div>
+</header>
+<!-- HEADER END-->
+<div class="navbar navbar-inverse set-radius-zero">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="index.html">
+
+                <img src="assets/img/logo.png" />
+            </a>
+
+        </div>
+
+        <div class="left-div">
+            <i class="fa fa-user-plus login-icon" ></i>
+        </div>
+    </div>
+</div>
+<!-- LOGO HEADER END-->
+
+<!-- MENU SECTION END-->
+<div class="content-wrapper">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h4 class="page-head-line">Create A New Document</h4>
+            </div>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-md-7 col-md-offset-2">
+            <label>Title: </label>
+            <input id="title" name="title" type="text" class="form-control" />
+            <span class="error-info alert-warning" id="title_error">Enter a title</span><br>
+            <label>Link: </label>
+            <input type="text" id="link" name="link" class="form-control" />
+            <span class="error-info alert-warning" id="link_error">Enter a link</span><br>
+            <label>Description: </label>
+            <textarea id="description" name="description" rows="5" class="form-control" name="description"></textarea><br/>
+            <label>Department: </label>
+            <select id="deptid" class="form-control" name="deptid">
+            </select>
+            <span class="error-info alert-warning" id="department_error">Choose a department</span><br>
+            <a id="create_btn" class="btn btn-info"><span class="glyphicon glyphicon-book"></span> &nbsp;Create Document </a>&nbsp;
+            <br><br>
+        </div>
+        <div class="col-md-6">
+        </div>
+    </div>
+</div>
+<!-- CONTENT-WRAPPER SECTION END-->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <p style="text-align: center; vertical-align: middle;">&copy; 2016 Scribe</p>
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- FOOTER SECTION END-->
+<!-- JAVASCRIPT AT THE BOTTOM TO REDUCE THE LOADING TIME  -->
+<!-- CORE JQUERY SCRIPTS -->
+<script src="assets/js/jquery-1.11.1.js"></script>
+<!-- BOOTSTRAP SCRIPTS  -->
+<script src="assets/js/bootstrap.js"></script>
+<script src="assets/js/sweetalert.min.js"></script>
+<script src="assets/js/jscookie.js"></script>
+<script>
+    $(document).ready(function(){
+
+        var get_vars = getQueryParams(document.location.search);
+
+        documentid = get_vars.id;
+
+        $.get('/documents/'+documentid,function(data){
+           console.log(data);
+        });
+        $.get('/departments',function(data){
+            for(var i = 0; i < data.length; i++){
+                $('#deptid').append("<option value='"+data[i].id+"'>"+data[i].name+"<option>");
+            }
+        });
+
+        $('.error-info').hide();
+
+        $('#create_btn').click(function(){
+            submit();
+        });
+    });
+
+
+    function submit(){
+        var title = $('#title').val();
+        var link = $('#link').val();
+        var description = $('#description').val();
+        var deptid = $('#deptid').val();
+
+        var has_error = false;
+
+        if(title === ""){
+            has_error = true;
+            $('#title_error').show();
+        }
+
+        if(link === ""){
+            has_error = true;
+            $('#link_error').show();
+        }
+
+        if(has_error){
+            swal({   animation: "slide-from-top", title: "<span style='color: #912a1d'>Hey partner!<br>There are a few errors</span>",   text: "Fix the errors to continue", html: true, type: "warning" });
+        }
+        else{
+            var user_id = Cookies.get('user_id');
+            var token = Cookies.get('token');
+            var documentdata = {title: title, link: link, description: description, deptid: deptid, token: token};
+            $.post('documents/create',documentdata,function(data){
+                if(data.status === 'success'){
+                    sweetAlert("Yippie",data.message, "success");
+                    setTimeout(function(){ window.location.href = '/user/'+user_id; }, 2000);
+                }
+                else{
+                    sweetAlert("Whoa",data.error, "error");
+                }
+            });
+        }
+    }
+
+    function validateEmail(email) {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(email);
+    }
+
+    function getQueryParams(qs) {
+        qs = qs.split("+").join(" ");
+        var params = {},
+                tokens,
+                re = /[?&]?([^=]+)=([^&]*)/g;
+
+        while (tokens = re.exec(qs)) {
+            params[decodeURIComponent(tokens[1])]
+                    = decodeURIComponent(tokens[2]);
+        }
+
+        return params;
+    }
+</script>
+</body>
+</html>
