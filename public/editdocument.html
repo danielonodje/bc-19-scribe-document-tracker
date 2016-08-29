@@ -46,8 +46,8 @@
                 <span class="icon-bar"></span>
             </button>
             <a class="navbar-brand" href="index.html">
-
-                <img src="assets/img/logo.png" />
+                <h3>Scribe</h3>
+                <!--<img src="assets/img/logo.png" />-->
             </a>
 
         </div>
@@ -64,7 +64,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <h4 class="page-head-line">Create A New Document</h4>
+                <h4 class="page-head-line">Edit Document</h4>
             </div>
         </div>
 
@@ -116,7 +116,15 @@
         documentid = get_vars.id;
 
         $.get('/documents/'+documentid,function(data){
-           console.log(data);
+           var document = data.document;
+            if(document !== null || document !== undefined){
+                var title = $('#title').val(document.title);
+                var link = $('#link').val(document.link);
+                var description = $('#description').val(document.description);
+                var deptid = document.DepartmentId;
+            }else{
+                sweetAlert("Whoa",data.error, "error");
+            }
         });
         $.get('/departments',function(data){
             for(var i = 0; i < data.length; i++){
@@ -156,13 +164,16 @@
         else{
             var user_id = Cookies.get('user_id');
             var token = Cookies.get('token');
-            var documentdata = {title: title, link: link, description: description, deptid: deptid, token: token};
-            $.post('documents/create',documentdata,function(data){
-                if(data.status === 'success'){
-                    sweetAlert("Yippie",data.message, "success");
-                    setTimeout(function(){ window.location.href = '/user/'+user_id; }, 2000);
-                }
-                else{
+            var get_vars = getQueryParams(document.location.search);
+            documentid = get_vars.id;
+            var documentdata = {id: documentid, title: title, link: link, description: description, deptid: deptid, token: token};
+            $.post('documents/edit/'+documentid,documentdata,function(data){
+                if(data.status !== 'fail'){
+                    sweetAlert("Whoa",data.message, "success");
+                    setTimeout(function () {
+                        window.location.href = "/users/"+user_id;
+                    },2000);
+                }else{
                     sweetAlert("Whoa",data.error, "error");
                 }
             });
